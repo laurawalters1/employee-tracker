@@ -9,7 +9,7 @@ CREATE TABLE departments(
 );
 
 CREATE TABLE roles(
-    id AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30),
     salary DECIMAL,
     department_id INT,
@@ -19,7 +19,7 @@ CREATE TABLE roles(
 );
 
 CREATE TABLE employees(
-    id AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
     role_id INT,
@@ -30,5 +30,5 @@ CREATE TABLE employees(
     FOREIGN KEY (manager_id)
     REFERENCES employees(id)
     ON DELETE SET NULL
-)
+);
 
