@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const db = require("./db/conn");
-const { viewDepartments } = require("./classes/department");
+const { viewDepartments, addDepartment } = require("./classes/department");
 const { viewRoles } = require("./classes/role");
 const { viewEmployees } = require("./classes/employee");
 let queryResults;
@@ -15,6 +15,26 @@ const startUpOptions = [
   "Add an employee",
   "Update an employee role",
 ];
+
+addDepartmentPrompt = () => {
+  inquirer
+    .prompt([
+      {
+        name: "departmentName",
+        message: "Please provide the department name",
+      },
+    ])
+    .then((answer) => {
+      db.query(addDepartment, answer.departmentName, (err, results) => {
+        if (err) {
+          console.log("There was an error adding this department name");
+        } else {
+          console.log("Department added!");
+        }
+        startUpPrompt();
+      });
+    });
+};
 
 startUpPrompt = () => {
   inquirer
@@ -50,8 +70,8 @@ startUpPrompt = () => {
 
           break;
         case "Add a department":
-          console.log("You chose to add a department");
-          startUpPrompt();
+          addDepartmentPrompt();
+
           break;
         case "Add a role":
           console.log("You chose to add a role");
