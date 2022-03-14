@@ -12,12 +12,14 @@ const {
   addRole,
   getRoleTitles,
   getRoleId,
+  viewRolesJoin,
 } = require("./classes/role");
 const {
   viewEmployees,
   addEmployee,
   getEmployeeNames,
   getEmployeeId,
+  viewEmployeeJoin,
 } = require("./classes/employee");
 const { find } = require("rxjs");
 let queryResults;
@@ -280,14 +282,14 @@ startUpPrompt = () => {
 
           break;
         case "View all roles":
-          db.query(viewRoles, function (err, results) {
+          db.query(viewRolesJoin, function (err, results) {
             console.table(results);
             startUpPrompt();
           });
 
           break;
         case "View all employees":
-          db.query(viewEmployees, function (err, results) {
+          db.query(viewEmployeeJoin, function (err, results) {
             console.table(results);
             startUpPrompt();
           });
