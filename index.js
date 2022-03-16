@@ -20,6 +20,7 @@ const {
   getEmployeeNames,
   getEmployeeId,
   viewEmployeeJoin,
+  updateEmployee,
 } = require("./classes/employee");
 const { find } = require("rxjs");
 let queryResults;
@@ -262,6 +263,44 @@ addDepartmentPrompt = () => {
     });
 };
 
+updateEmployeePrompt = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employee",
+        message: "Please choose an employee to update",
+        choices: JSON.parse(employeeNames),
+      },
+      {
+        type: "list",
+        name: "role",
+        message:
+          "Please select which role you would like to update this employee to",
+        choices: JSON.parse(roleTitles),
+      },
+    ])
+    .then((answer) => {
+      findRoleId(answer.role).then(() => {
+        let employeeName = answer.employee;
+        let employeeNameArr = employeeName.split(" ");
+        findEmployeeId(employeeNameArr[0], employeeNameArr[1]).then(() => {
+          db.query(updateEmployee, [roleId, employeeId], (err, results) => {
+            if (err) {
+              console.log("There was an error updating this employee");
+              //   console.log(roleId, employeeId);
+              console.log(updateEmployee);
+            } else {
+              console.log("Employee updated!");
+              //   console.log(mysql_row)
+              startUpPrompt();
+            }
+          });
+        });
+      });
+    });
+};
+
 startUpPrompt = () => {
   inquirer
     .prompt([
@@ -306,8 +345,8 @@ startUpPrompt = () => {
           addEmployeePrompt();
           break;
         case "Update an employee role":
-          console.log("You chose to update an employee role");
-          startUpPrompt();
+          updateEmployeePrompt();
+
           break;
         default:
         // code block

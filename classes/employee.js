@@ -8,6 +8,7 @@ employee = {
   INNER JOIN roles ON employee.role_id = roles.id
   INNER JOIN departments ON roles.department_id = departments.id
   INNER JOIN employees manager ON employee.manager_id = manager.id;`,
+  updateEmployee: `UPDATE employees SET role_id = ? WHERE id = ?;`,
 };
 
 module.exports = employee;
