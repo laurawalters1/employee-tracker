@@ -150,58 +150,60 @@ getRoles();
 addEmployeePrompt = () => {
   Promise.all([getRoles(), getEmployees()]).then((results) => {
     console.log(roleTitles, employeeNames);
-    inquirer
-      .prompt([
-        {
-          name: "firstName",
-          message: "Please provide this employees first name",
-        },
-        {
-          name: "secondName",
-          message: "Please provide this employees second name",
-        },
-        {
-          type: "list",
-          name: "role",
-          message: "Please select this employees role",
-          choices: JSON.parse(roleTitles),
-        },
-        {
-          type: "list",
-          name: "manager",
-          message: "Please select this employees manager",
-          choices: JSON.parse(employeeNames),
-        },
-      ])
-      .then((answer) => {
-        let managerName = answer.manager;
-        let managerNameArr = managerName.split(" ");
-        console.log(managerNameArr);
-        Promise.all([
-          findRoleId(answer.role),
-          findEmployeeId(managerNameArr[0], managerNameArr[1]),
+    getEmployees().then((results) => {
+      inquirer
+        .prompt([
+          {
+            name: "firstName",
+            message: "Please provide this employees first name",
+          },
+          {
+            name: "secondName",
+            message: "Please provide this employees second name",
+          },
+          {
+            type: "list",
+            name: "role",
+            message: "Please select this employees role",
+            choices: JSON.parse(roleTitles),
+          },
+          {
+            type: "list",
+            name: "manager",
+            message: "Please select this employees manager",
+            choices: JSON.parse(employeeNames),
+          },
         ])
-          .then((result) => {
-            console.log(`This is the ${employeeId}`);
-            db.query(
-              addEmployee,
-              [answer.firstName, answer.secondName, roleId, employeeId],
-              (err, results) => {
-                if (err) {
-                  console.log(
-                    "There was an error adding this employee name" + err
-                  );
-                } else {
-                  console.log("employee added!");
+        .then((answer) => {
+          let managerName = answer.manager;
+          let managerNameArr = managerName.split(" ");
+          console.log(managerNameArr);
+          Promise.all([
+            findRoleId(answer.role),
+            findEmployeeId(managerNameArr[0], managerNameArr[1]),
+          ])
+            .then((result) => {
+              console.log(`This is the ${employeeId}`);
+              db.query(
+                addEmployee,
+                [answer.firstName, answer.secondName, roleId, employeeId],
+                (err, results) => {
+                  if (err) {
+                    console.log(
+                      "There was an error adding this employee name" + err
+                    );
+                  } else {
+                    console.log("employee added!");
+                  }
+                  startUpPrompt();
                 }
-                startUpPrompt();
-              }
-            );
-          })
-          .catch((exc, err) => {
-            console.log(`There was an error`);
-          });
-      });
+              );
+            })
+            .catch((exc, err) => {
+              console.log(`There was an error`);
+            });
+        });
+    });
   });
 };
 addRolePrompt = () => {
@@ -264,41 +266,43 @@ addDepartmentPrompt = () => {
 };
 
 updateEmployeePrompt = () => {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "employee",
-        message: "Please choose an employee to update",
-        choices: JSON.parse(employeeNames),
-      },
-      {
-        type: "list",
-        name: "role",
-        message:
-          "Please select which role you would like to update this employee to",
-        choices: JSON.parse(roleTitles),
-      },
-    ])
-    .then((answer) => {
-      findRoleId(answer.role).then(() => {
-        let employeeName = answer.employee;
-        let employeeNameArr = employeeName.split(" ");
-        findEmployeeId(employeeNameArr[0], employeeNameArr[1]).then(() => {
-          db.query(updateEmployee, [roleId, employeeId], (err, results) => {
-            if (err) {
-              console.log("There was an error updating this employee");
-              //   console.log(roleId, employeeId);
-              console.log(updateEmployee);
-            } else {
-              console.log("Employee updated!");
-              //   console.log(mysql_row)
-              startUpPrompt();
-            }
+  getEmployees().then((results) => {
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employee",
+          message: "Please choose an employee to update",
+          choices: JSON.parse(employeeNames),
+        },
+        {
+          type: "list",
+          name: "role",
+          message:
+            "Please select which role you would like to update this employee to",
+          choices: JSON.parse(roleTitles),
+        },
+      ])
+      .then((answer) => {
+        findRoleId(answer.role).then(() => {
+          let employeeName = answer.employee;
+          let employeeNameArr = employeeName.split(" ");
+          findEmployeeId(employeeNameArr[0], employeeNameArr[1]).then(() => {
+            db.query(updateEmployee, [roleId, employeeId], (err, results) => {
+              if (err) {
+                console.log("There was an error updating this employee");
+                //   console.log(roleId, employeeId);
+                console.log(updateEmployee);
+              } else {
+                console.log("Employee updated!");
+                //   console.log(mysql_row)
+                startUpPrompt();
+              }
+            });
           });
         });
       });
-    });
+  });
 };
 
 startUpPrompt = () => {
