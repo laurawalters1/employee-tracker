@@ -205,7 +205,7 @@ addEmployeePrompt = () => {
   });
 };
 addRolePrompt = () => {
-  getDepartmentNames().then((results) => {
+  getDepartments().then((results) => {
     inquirer
       .prompt([
         {
@@ -220,7 +220,7 @@ addRolePrompt = () => {
           type: "list",
           name: "department",
           message: "Please select an the department to which this role belongs",
-          choices: departmentNames,
+          choices: JSON.parse(departmentNames),
         },
       ])
       .then((answer) => {
