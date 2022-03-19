@@ -1,6 +1,8 @@
+// Pulling in dependencies
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const db = require("./db/conn");
+// Destructuring query statements from object files
 const {
   viewDepartments,
   addDepartment,
@@ -24,6 +26,7 @@ const {
 } = require("./classes/employee");
 const { find } = require("rxjs");
 let queryResults;
+// Setting up variables to be used throughout the application
 let depId;
 let roleId;
 let employeeId;
@@ -31,6 +34,7 @@ let departmentNames;
 let roleTitles;
 let employeeNames;
 
+// Setting up the array for the start up menu
 const startUpOptions = [
   "View all departments",
   "View all roles",
@@ -41,6 +45,7 @@ const startUpOptions = [
   "Update an employee role",
 ];
 
+// Function which runs the database query and and sets the employeeId variable to that of the chosen manager
 findEmployeeId = (employeeFirstName, employeeLastName) => {
   return new Promise((resolve, reject) => {
     db.query(
@@ -60,6 +65,7 @@ findEmployeeId = (employeeFirstName, employeeLastName) => {
   });
 };
 
+// Function the get the role id of the employee currently being accessed
 findRoleId = (roleTitle) => {
   return new Promise((resolve, reject) => {
     db.query(getRoleId, roleTitle, function (err, results) {
@@ -67,7 +73,6 @@ findRoleId = (roleTitle) => {
         console.log("There was an error finding the roles");
         reject();
       } else if (results) {
-        // console.log(`Role id: ${results[0].id}`);
         roleId = results[0].id;
         resolve();
       }
@@ -75,6 +80,7 @@ findRoleId = (roleTitle) => {
   });
 };
 
+// Function to get the department id of the department currently being accessed
 findDepartmentId = (departmentName) => {
   return new Promise((resolve, reject) => {
     db.query(getDepartmentId, departmentName, function (err, results) {
@@ -90,6 +96,7 @@ findDepartmentId = (departmentName) => {
   });
 };
 
+// Function to get the departments array to display as a menu for the user
 getDepartments = () => {
   return new Promise((resolve, reject) => {
     db.query(getDepartmentNames, function (err, results) {
@@ -106,6 +113,7 @@ getDepartments = () => {
   });
 };
 
+// Function to get the roles array to display as a menu to the user
 getRoles = () => {
   return new Promise((resolve, reject) => {
     db.query(getRoleTitles, function (err, results) {
@@ -122,6 +130,7 @@ getRoles = () => {
   });
 };
 
+// Function to get employees array to display as a menu to the user
 getEmployees = () => {
   return new Promise((resolve, reject) => {
     db.query(getEmployeeNames, function (err, results) {
@@ -144,9 +153,9 @@ getDepartments();
 getEmployees();
 getRoles();
 
+// Prompt to add an employee
 addEmployeePrompt = () => {
   Promise.all([getRoles(), getEmployees()]).then((results) => {
-    // console.log(roleTitles, employeeNames);
     getEmployees().then((results) => {
       inquirer
         .prompt([
@@ -173,10 +182,12 @@ addEmployeePrompt = () => {
         ])
         .then((answer) => {
           let managerName = answer.manager;
+          // Converting manager name answer into a format which can be submitted into the findEmployeeId function
           let managerNameArr = managerName.split(" ");
-          //   console.log(managerNameArr);
+
           Promise.all([
             findRoleId(answer.role),
+
             findEmployeeId(managerNameArr[0], managerNameArr[1]),
           ])
             .then((result) => {
@@ -200,6 +211,7 @@ addEmployeePrompt = () => {
     });
   });
 };
+// Prompt to add a new role
 addRolePrompt = () => {
   getDepartments().then((results) => {
     inquirer
@@ -238,6 +250,7 @@ addRolePrompt = () => {
   });
 };
 
+// Prompt to add a department
 addDepartmentPrompt = () => {
   inquirer
     .prompt([
@@ -258,6 +271,7 @@ addDepartmentPrompt = () => {
     });
 };
 
+// Prompt to update an employee
 updateEmployeePrompt = () => {
   getEmployees().then((results) => {
     inquirer
@@ -348,4 +362,5 @@ startUpPrompt = () => {
     });
 };
 
+// Implementation of the application
 startUpPrompt();
