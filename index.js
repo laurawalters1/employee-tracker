@@ -48,7 +48,7 @@ findEmployeeId = (employeeFirstName, employeeLastName) => {
       [employeeFirstName, employeeLastName],
       function (err, results) {
         if (err) {
-          console.log("There was an error");
+          console.log("There was an error finding the employees");
           reject();
         } else if (results) {
           console.log(`Employee id: ${results[0].id}`);
@@ -64,7 +64,7 @@ findRoleId = (roleTitle) => {
   return new Promise((resolve, reject) => {
     db.query(getRoleId, roleTitle, function (err, results) {
       if (err) {
-        console.log("There was an error");
+        console.log("There was an error finding the roles");
         reject();
       } else if (results) {
         console.log(`Role id: ${results[0].id}`);
@@ -79,7 +79,7 @@ findDepartmentId = (departmentName) => {
   return new Promise((resolve, reject) => {
     db.query(getDepartmentId, departmentName, function (err, results) {
       if (err) {
-        console.log("There was an error");
+        console.log("There was an error finding the departments");
         reject();
       } else if (results) {
         console.log(results[0].id);
@@ -94,14 +94,13 @@ getDepartments = () => {
   return new Promise((resolve, reject) => {
     db.query(getDepartmentNames, function (err, results) {
       if (err) {
-        console.log("There was and error");
+        console.log("There was and error generating the departments list");
         reject();
       } else {
         departmentNamesArr = results.map((result) => result.name);
       }
       departmentNames = JSON.stringify(departmentNamesArr);
       resolve();
-
       return JSON.stringify(departmentNamesArr);
     });
   });
@@ -111,14 +110,13 @@ getRoles = () => {
   return new Promise((resolve, reject) => {
     db.query(getRoleTitles, function (err, results) {
       if (err) {
-        console.log("There was and error");
+        console.log("There was an error getting the role titles");
         reject();
       } else {
         roleTitlesArr = results.map((result) => result.title);
       }
       roleTitles = JSON.stringify(roleTitlesArr);
       resolve();
-
       return JSON.stringify(roleTitlesArr);
     });
   });
@@ -128,7 +126,7 @@ getEmployees = () => {
   return new Promise((resolve, reject) => {
     db.query(getEmployeeNames, function (err, results) {
       if (err) {
-        console.log("There was and error");
+        console.log("There was and error getting ");
         reject();
       } else {
         employeeNamesArr = results.map(
@@ -137,7 +135,6 @@ getEmployees = () => {
       }
       employeeNames = JSON.stringify(employeeNamesArr);
       resolve();
-
       return JSON.stringify(employeeNamesArr);
     });
   });
@@ -183,15 +180,12 @@ addEmployeePrompt = () => {
             findEmployeeId(managerNameArr[0], managerNameArr[1]),
           ])
             .then((result) => {
-              console.log(`This is the ${employeeId}`);
               db.query(
                 addEmployee,
                 [answer.firstName, answer.secondName, roleId, employeeId],
                 (err, results) => {
                   if (err) {
-                    console.log(
-                      "There was an error adding this employee name" + err
-                    );
+                    console.log("There was an error adding this employee name");
                   } else {
                     console.log("employee added!");
                   }
@@ -200,7 +194,7 @@ addEmployeePrompt = () => {
               );
             })
             .catch((exc, err) => {
-              console.log(`There was an error`);
+              console.log(`There was an error adding this employee name`);
             });
         });
     });
@@ -227,13 +221,12 @@ addRolePrompt = () => {
       ])
       .then((answer) => {
         findDepartmentId(answer.department).then((result) => {
-          console.log(`This is the ${depId}`);
           db.query(
             addRole,
             [answer.roleName, answer.salary, depId],
             (err, results) => {
               if (err) {
-                console.log("There was an error adding this role name" + err);
+                console.log("There was an error adding this role name");
               } else {
                 console.log("role added!");
               }
@@ -291,11 +284,9 @@ updateEmployeePrompt = () => {
             db.query(updateEmployee, [roleId, employeeId], (err, results) => {
               if (err) {
                 console.log("There was an error updating this employee");
-                //   console.log(roleId, employeeId);
                 console.log(updateEmployee);
               } else {
                 console.log("Employee updated!");
-                //   console.log(mysql_row)
                 startUpPrompt();
               }
             });
@@ -353,7 +344,6 @@ startUpPrompt = () => {
 
           break;
         default:
-        // code block
       }
     });
 };
