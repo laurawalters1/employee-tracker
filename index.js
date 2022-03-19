@@ -51,7 +51,7 @@ findEmployeeId = (employeeFirstName, employeeLastName) => {
           console.log("There was an error finding the employees");
           reject();
         } else if (results) {
-          console.log(`Employee id: ${results[0].id}`);
+          //   console.log(`Employee id: ${results[0].id}`);
           employeeId = results[0].id;
           resolve();
         }
@@ -67,7 +67,7 @@ findRoleId = (roleTitle) => {
         console.log("There was an error finding the roles");
         reject();
       } else if (results) {
-        console.log(`Role id: ${results[0].id}`);
+        // console.log(`Role id: ${results[0].id}`);
         roleId = results[0].id;
         resolve();
       }
@@ -146,7 +146,7 @@ getRoles();
 
 addEmployeePrompt = () => {
   Promise.all([getRoles(), getEmployees()]).then((results) => {
-    console.log(roleTitles, employeeNames);
+    // console.log(roleTitles, employeeNames);
     getEmployees().then((results) => {
       inquirer
         .prompt([
@@ -174,7 +174,7 @@ addEmployeePrompt = () => {
         .then((answer) => {
           let managerName = answer.manager;
           let managerNameArr = managerName.split(" ");
-          console.log(managerNameArr);
+          //   console.log(managerNameArr);
           Promise.all([
             findRoleId(answer.role),
             findEmployeeId(managerNameArr[0], managerNameArr[1]),
@@ -284,7 +284,7 @@ updateEmployeePrompt = () => {
             db.query(updateEmployee, [roleId, employeeId], (err, results) => {
               if (err) {
                 console.log("There was an error updating this employee");
-                console.log(updateEmployee);
+                // console.log(updateEmployee);
               } else {
                 console.log("Employee updated!");
                 startUpPrompt();
